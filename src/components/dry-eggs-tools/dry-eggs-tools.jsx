@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import styles from './dry-eggs-tools.css';
@@ -24,6 +23,14 @@ class DryEggsTools extends React.PureComponent {
     }
 
     componentDidMount () {
+        try {
+            if (localStorage.getItem('dry-eggs-motion') === 'off') {
+                document.documentElement.dataset.dryEggsMotion = 'off';
+                this.setState({motion: false});
+            }
+        } catch (e) {
+            // Storage can be unavailable in privacy-restricted contexts.
+        }
         window.addEventListener('keydown', this.handleKeyDown);
     }
 
@@ -39,7 +46,7 @@ class DryEggsTools extends React.PureComponent {
             this.toggleOpen();
         } else if (modifier && event.shiftKey && event.key.toLowerCase() === 'e') {
             event.preventDefault();
-            this.props.onOpenExtensions();
+            window.open(EXTENSION_LIBRARY_URL, '_blank', 'noopener,noreferrer');
         } else if (modifier && event.shiftKey && event.key.toLowerCase() === 'f') {
             event.preventDefault();
             this.toggleFullscreen();
@@ -162,7 +169,7 @@ class DryEggsTools extends React.PureComponent {
                                 <div>
                                     <div className={styles.eyebrow}>DRY EGGS</div>
                                     <h2>Quick tools</h2>
-                                    <p>Editor features built into Dry Eggs.</p>
+                                    <p>Editor features built directly into Dry Eggs.</p>
                                 </div>
                                 <button
                                     className={styles.close}
@@ -174,29 +181,23 @@ class DryEggsTools extends React.PureComponent {
                                 </button>
                             </header>
                             <div className={styles.grid}>
-                                {this.renderAction('↥', 'Open project file', 'Load an SB3 from your computer', () => {
-                                    this.props.onOpenProjectFile();
-                                    this.close();
-                                })}
-                                {this.renderAction('✦', 'Extension Library', 'Open the native Dry Eggs library', () => {
-                                    this.props.onOpenExtensions();
-                                    this.close();
-                                })}
+                                {this.renderAction('✦', 'Extension site', 'Browse the complete Dry Eggs extension library', () => window.open(EXTENSION_LIBRARY_URL, '_blank', 'noopener,noreferrer'))}
                                 {this.renderAction('⌁', 'Coding focus', 'Hide the stage pane and use the full width', this.toggleCodingFocus, this.state.codingFocus)}
                                 {this.renderAction('⛶', 'Browser fullscreen', 'Use the entire display · Ctrl+Shift+F', this.toggleFullscreen)}
                                 {this.renderAction(this.state.copied ? '✓' : '⧉', this.state.copied ? 'Link copied' : 'Copy project link', 'Copy the current Dry Eggs URL', this.copyProjectLink)}
                                 {this.renderAction('≈', 'Interface animations', 'Turn Dry Eggs motion effects on or off', this.toggleMotion, this.state.motion)}
                                 {this.renderAction('↗', 'Open new window', 'Open this project in another tab', () => window.open(window.location.href, '_blank', 'noopener,noreferrer'))}
                                 {this.renderAction('↻', 'Reload editor', 'Reload without changing the project URL', () => window.location.reload())}
+                                {this.renderAction('⌂', 'Fresh editor', 'Open a new Dry Eggs editor tab', () => window.open(`${window.location.origin}${process.env.ROOT}editor.html`, '_blank', 'noopener,noreferrer'))}
                             </div>
                             <footer className={styles.footer}>
                                 <button
                                     type="button"
                                     onClick={() => window.open(EXTENSION_LIBRARY_URL, '_blank', 'noopener,noreferrer')}
                                 >
-                                    Open full extension site ↗
+                                    Extension library ↗
                                 </button>
-                                <span>Ctrl+Shift+E opens extensions</span>
+                                <span>Ctrl+Shift+E opens the extension site</span>
                             </footer>
                         </section>
                     </div>
@@ -205,10 +206,5 @@ class DryEggsTools extends React.PureComponent {
         );
     }
 }
-
-DryEggsTools.propTypes = {
-    onOpenExtensions: PropTypes.func.isRequired,
-    onOpenProjectFile: PropTypes.func.isRequired
-};
 
 export default DryEggsTools;
