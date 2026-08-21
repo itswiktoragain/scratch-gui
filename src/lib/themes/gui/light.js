@@ -1,62 +1,62 @@
 const guiColors = {
     'color-scheme': 'light',
 
-    'ui-primary': 'hsla(215, 100%, 95%, 1)', /* #E5F0FF */
-    'ui-secondary': 'hsla(215, 75%, 95%, 1)', /* #E9F1FC */
-    'ui-tertiary': 'hsla(215, 50%, 90%, 1)', /* #D9E3F2 */
+    'ui-primary': '#f3f6fa',
+    'ui-secondary': '#eef2f7',
+    'ui-tertiary': '#dbe2ea',
 
-    'ui-modal-overlay': 'var(--motion-primary-transparent)',
-    'ui-modal-background': 'hsla(0, 100%, 100%, 1)', /* #FFFFFF */
-    'ui-modal-foreground': 'hsla(225, 15%, 40%, 1)', /* #575E75 */
-    'ui-modal-header-background': 'var(--looks-secondary)',
-    'ui-modal-header-foreground': 'hsla(0, 100%, 100%, 1)', /* #FFFFFF */
+    'ui-modal-overlay': 'rgba(20, 37, 63, 0.45)',
+    'ui-modal-background': '#ffffff',
+    'ui-modal-foreground': '#344054',
+    'ui-modal-header-background': '#2f80ed',
+    'ui-modal-header-foreground': '#ffffff',
 
-    'ui-white': 'hsla(0, 100%, 100%, 1)', /* #FFFFFF */
-    'ui-white-dim': 'hsla(0, 100%, 100%, 0.75)', /* 25% transparent version of ui-white */
-    'ui-white-transparent': 'hsla(0, 100%, 100%, 0.25)', /* 25% transparent version of ui-white */
-    'ui-transparent': 'hsla(0, 100%, 100%, 0)', /* 25% transparent version of ui-white */
+    'ui-white': '#ffffff',
+    'ui-white-dim': 'rgba(255, 255, 255, 0.8)',
+    'ui-white-transparent': 'rgba(255, 255, 255, 0.24)',
+    'ui-transparent': 'rgba(255, 255, 255, 0)',
 
-    'ui-black-transparent': 'hsla(0, 0%, 0%, 0.15)', /* 15% transparent version of black */
+    'ui-black-transparent': 'rgba(17, 24, 39, 0.12)',
 
-    'text-primary': 'hsla(225, 15%, 40%, 1)', /* #575E75 */
-    'text-primary-transparent': 'hsla(225, 15%, 40%, 0.75)',
+    'text-primary': '#344054',
+    'text-primary-transparent': 'rgba(52, 64, 84, 0.74)',
 
-    'motion-primary': 'hsla(215, 100%, 65%, 1)', /* #4C97FF */
-    'motion-primary-transparent': 'hsla(215, 100%, 65%, 0.9)', /* 90% transparent version of motion-primary */
-    'motion-tertiary': 'hsla(215, 60%, 50%, 1)', /* #3373CC */
+    'motion-primary': '#4c97ff',
+    'motion-primary-transparent': 'rgba(76, 151, 255, 0.9)',
+    'motion-tertiary': '#3373cc',
 
-    'looks-secondary': 'hsla(260, 60%, 60%, 1)', /* #855CD6 */
-    'looks-transparent': 'hsla(260, 60%, 60%, 0.35)', /* 35% transparent version of looks-tertiary */
-    'looks-light-transparent': 'hsla(260, 60%, 60%, 0.15)', /* 15% transparent version of looks-tertiary */
-    'looks-secondary-dark': 'hsla(260, 42%, 51%, 1)', /* #714EB6 */
+    'looks-secondary': '#2f80ed',
+    'looks-transparent': 'rgba(47, 128, 237, 0.35)',
+    'looks-light-transparent': 'rgba(47, 128, 237, 0.14)',
+    'looks-secondary-dark': '#2167c7',
 
-    'red-primary': 'hsla(20, 100%, 55%, 1)', /* #FF661A */
-    'red-tertiary': 'hsla(20, 100%, 45%, 1)', /* #E64D00 */
+    'red-primary': '#ff661a',
+    'red-tertiary': '#e64d00',
 
-    'sound-primary': 'hsla(300, 53%, 60%, 1)', /* #CF63CF */
-    'sound-tertiary': 'hsla(300, 48%, 50%, 1)', /* #BD42BD */
+    'sound-primary': '#cf63cf',
+    'sound-tertiary': '#bd42bd',
 
-    'control-primary': 'hsla(38, 100%, 55%, 1)', /* #FFAB19 */
+    'control-primary': '#ffab19',
 
-    'data-primary': 'hsla(30, 100%, 55%, 1)', /* #FF8C1A */
+    'data-primary': '#ff8c1a',
 
-    'pen-primary': 'hsla(163, 85%, 40%, 1)', /* #0FBD8C */
-    'pen-transparent': 'hsla(163, 85%, 40%, 0.25)', /* #0FBD8C */
-    'pen-tertiary': 'hsla(163, 86%, 30%, 1)', /* #0B8E69 */
+    'pen-primary': '#0fbd8c',
+    'pen-transparent': 'rgba(15, 189, 140, 0.25)',
+    'pen-tertiary': '#0b8e69',
 
-    'error-primary': 'hsla(30, 100%, 55%, 1)', /* #FF8C1A */
-    'error-light': 'hsla(30, 100%, 70%, 1)', /* #FFB366 */
-    'error-transparent': 'hsla(30, 100%, 55%, 0.25)', /* #FF8C1A */
+    'error-primary': '#ff8c1a',
+    'error-light': '#ffb366',
+    'error-transparent': 'rgba(255, 140, 26, 0.25)',
 
-    'extensions-primary': 'hsla(163, 85%, 40%, 1)', /* #0FBD8C */
-    'extensions-tertiary': 'hsla(163, 85%, 30%, 1)', /* #0B8E69 */
-    'extensions-transparent': 'hsla(163, 85%, 40%, 0.35)', /* 35% transparent version of extensions-primary */
-    'extensions-light': 'hsla(163, 57%, 85%, 1)', /* opaque version of extensions-transparent, on white bg */
+    'extensions-primary': '#0fbd8c',
+    'extensions-tertiary': '#0b8e69',
+    'extensions-transparent': 'rgba(15, 189, 140, 0.35)',
+    'extensions-light': '#cbeee4',
 
-    'drop-highlight': 'hsla(215, 100%, 77%, 1)', /* lighter than motion-primary */
+    'drop-highlight': '#8dbdff',
 
-    'menu-bar-background': 'var(--looks-secondary)',
-    'menu-bar-background-image': 'none',
+    'menu-bar-background': '#2f80ed',
+    'menu-bar-background-image': 'linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0))',
     'menu-bar-foreground': '#ffffff',
 
     'assets-background': '#ffffff',
@@ -65,21 +65,21 @@ const guiColors = {
 
     'popover-background': '#ffffff',
 
-    'shadow': 'hsla(0, 0%, 0%, 0.15)',
+    'shadow': 'rgba(17, 24, 39, 0.14)',
 
-    'badge-background': '#dbebff',
-    'badge-border': '#b9d6ff',
+    'badge-background': '#e4efff',
+    'badge-border': '#bed8ff',
 
-    'fullscreen-background': '#ffffff',
-    'fullscreen-accent': '#e8edf1',
+    'fullscreen-background': '#f7f9fc',
+    'fullscreen-accent': '#e8edf3',
 
     'page-background': '#ffffff',
-    'page-foreground': '#000000',
+    'page-foreground': '#111827',
 
-    'project-title-inactive': 'var(--ui-white-transparent)',
-    'project-title-hover': '#ffffff7f',
+    'project-title-inactive': 'rgba(255, 255, 255, 0.18)',
+    'project-title-hover': 'rgba(255, 255, 255, 0.34)',
 
-    'link-color': '#2255dd',
+    'link-color': '#1d5fd0',
 
     'filter-icon-black': 'none',
     'filter-icon-gray': 'grayscale(100%)',
