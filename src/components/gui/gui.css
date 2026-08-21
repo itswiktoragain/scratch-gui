@@ -2,15 +2,48 @@
 @import "../../css/colors.css";
 @import "../../css/z-index.css";
 
+@keyframes editor-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.997);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes panel-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes extension-pulse {
+    0%, 100% {
+        box-shadow: 0 8px 20px rgba(21, 94, 239, .28);
+    }
+    50% {
+        box-shadow: 0 10px 28px rgba(21, 94, 239, .42);
+    }
+}
+
 .page-wrapper {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: #f5f7fb;
+    animation: editor-enter 340ms cubic-bezier(.2, .9, .25, 1) both;
 }
 
 .body-wrapper {
     flex-grow: 1;
-    background-color: $ui-primary;
+    background: linear-gradient(180deg, #f6f8fb 0%, #edf2f8 100%);
 }
 
 .body-wrapper * {
@@ -19,248 +52,216 @@
 
 .flex-wrapper {
     display: flex;
-
-    /*
-        Make 2 columns:
-        a) for the blocks + workspace panes, and
-        b) for combined stage menu + stage + sprite/stage selectors
-    */
     flex-direction: row;
     height: 100%;
-
-    /*
-        Stop scrollbar popping in and out from scratch-blocks border issue
-        https://github.com/LLK/scratch-gui/issues/318
-        TW: and also fix double horizontal scrollbar at some screen sizes in paint editor
-    */
     overflow: hidden;
+    gap: .55rem;
+    padding: .55rem;
 }
 
 .editor-wrapper {
-    /*
-        This is carefully balanced--  the minimum width at which the GUI will be displayed is 1024px.
-        At that size, the stage pane is 408px wide, with $space of padding to each side.
-        However, we must also add the border width to the stage pane. All-in-all, the stage pane's final width is
-        408px + ($space + $stage-standard-border-width * 2) (one border & padding per left/right side).
-
-        @todo This is in place to prevent "doubling up" of horizontal scrollbars in narrow windows, but there are likely
-        much better ways to solve that (e.g. undo #2124, remove this flex-basis entirely). However, they run their own
-        risks of breaking things, so let's just leave this as-is for the time being.
-    */
     flex-basis: calc(1024px - 408px - (($space + $stage-standard-border-width) * 2));
     flex-grow: 1;
     flex-shrink: 0;
     position: relative;
-
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(16, 24, 40, .09);
+    border-radius: 1rem;
+    background: $ui-white;
+    box-shadow: 0 4px 14px rgba(16, 24, 40, .07);
 }
 
 .tab-list {
     height: $stage-menu-height;
-    width: 250px; /* Match width of the toolbox */
+    width: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     flex-shrink: 0;
-
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    font-size: 0.80rem;
-
-    /* Overrides for react-tabs styling */
+    gap: .25rem;
+    padding: .3rem .4rem;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 650;
+    font-size: .78rem;
     margin: 0 !important;
-    border-bottom: 0 !important;
-
+    border: 0 !important;
+    border-bottom: 1px solid rgba(16, 24, 40, .08) !important;
     color: $text-primary;
+    background: #f8fafc;
 }
 
 .tab {
-    flex-grow: 1;
-    height: 80%;
-    margin-bottom: 0;
-
-    border-radius: 1rem 1rem 0 0;
-    border: 1px solid $ui-black-transparent;
-
-    padding: 0.125rem 1.25rem 0;
-    font-size: 0.75rem;
-
-    background-color: $ui-tertiary;
+    flex: 0 1 auto;
+    height: 2.15rem;
+    min-width: 5.6rem;
+    margin: 0 !important;
+    border: 0;
+    border-radius: .72rem;
+    padding: 0 .75rem;
+    font-size: .75rem;
+    background: transparent;
     color: $text-primary-transparent;
-
     display: flex;
+    gap: .32rem;
     justify-content: center;
     align-items: center;
-
     user-select: none;
     white-space: nowrap;
-}
-
-[dir="ltr"] .tab {
-    margin-left: -0.5rem;
-}
-
-[dir="rtl"] .tab {
-    margin-right: -0.5rem;
-}
-
-[dir="ltr"] .tab:nth-of-type(1) {
-    margin-left: 0;
-}
-
-[dir="rtl"] .tab:nth-of-type(1) {
-    margin-right: 0;
-}
-
-/* Use z-indices to force left-on-top for tabs */
-.tab:nth-of-type(1) {
-    z-index: 3;
-}
-.tab:nth-of-type(2) {
-    z-index: 2;
-}
-.tab:nth-of-type(3) {
-    z-index: 1;
+    cursor: pointer;
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        transform 180ms cubic-bezier(.2, .9, .25, 1),
+        box-shadow 180ms ease;
 }
 
 .tab:hover {
-  background-color: $ui-primary;
+    color: $text-primary;
+    background: #edf3ff;
+    transform: translateY(-1px);
+}
+
+.tab:active {
+    transform: translateY(0) scale(.97);
 }
 
 .tab.is-selected {
-    height: 90%;
-    color: $looks-secondary;
-    background-color: $ui-white;
-    z-index: 4; /* Make sure selected is always above */
+    height: 2.15rem;
+    color: #155eef;
+    background: #e8f0ff;
+    box-shadow: inset 0 0 0 1px rgba(21, 94, 239, .16);
+    z-index: 4;
 }
 
 .tab img {
-    width: 1.375rem;
+    width: 1.15rem;
+    height: 1.15rem;
     filter: grayscale(100%);
+    opacity: .72;
+    transition: transform 180ms cubic-bezier(.2, .9, .25, 1), filter 180ms ease, opacity 180ms ease;
 }
 
-[dir="ltr"] .tab img {
-    margin-right: 0.125rem;
+.tab:hover img {
+    opacity: 1;
+    transform: scale(1.08);
 }
 
-[dir="rtl"] .tab img {
-    margin-left: 0.125rem;
-}
-
-/* mirror blocks and sound tab icons */
-[dir="rtl"] .tab:nth-of-type(1) img {
-    transform: scaleX(-1);
-}
-
+[dir="rtl"] .tab:nth-of-type(1) img,
 [dir="rtl"] .tab:nth-of-type(3) img {
     transform: scaleX(-1);
 }
 
 .tab.is-selected img {
     filter: none;
+    opacity: 1;
 }
 
-/* Tab style overrides from react-tabs */
-.tab.is-selected:after {
+.tab.is-selected:after,
+.tab.is-selected:focus:after {
     display: none;
 }
 
 .tab.is-selected:focus {
     outline: none;
-    box-shadow: none;
-    border-color: $ui-black-transparent;
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px rgba(21, 94, 239, .28), 0 0 0 2px rgba(21, 94, 239, .08);
 }
 
-.tab.is-selected:focus:after {
-    display: none;
-}
-
-/* Body of the tabs */
 .tabs {
     position: relative;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .tab-panel {
     position: relative;
     flex-grow: 1;
     display: none;
+    min-height: 0;
 }
 
 .tab-panel.is-selected {
     display: flex;
+    animation: panel-enter 240ms cubic-bezier(.2, .9, .25, 1) both;
 }
 
 .blocks-wrapper {
     flex-grow: 1;
     position: relative;
+    min-width: 0;
 }
 
 .stage-and-target-wrapper {
-    /*
-        Makes rows for children:
-          1) stage menu
-          2) stage
-          3) sprite/stage selectors
-        Only reason we need this, is so .targetWrapper, which holds the selectors,
-        goes to full vertical height of the window
-    */
     display: flex;
     flex-direction: column;
-    /* pad entire wrapper to the left and right; allow children to fill width */
-    padding-left: $space;
-    padding-right: $space;
-
-    /* this will only ever be as wide as the stage */
+    padding: .1rem .15rem 0;
     flex-basis: 0;
+    border-radius: 1rem;
+    animation: editor-enter 420ms 80ms cubic-bezier(.2, .9, .25, 1) both;
 }
 
 .target-wrapper {
     display: flex;
     flex-grow: 1;
     flex-basis: 0;
-
-    padding-top: $space;
-    min-height: 0; /* this makes it work in Firefox */
-
-    /*
-        For making the sprite-selector a scrollable pane
-        @todo: Not working in Safari
-    */
-    /* TODO this also breaks the thermometer menu */
-    /* overflow: hidden; */
+    padding-top: .55rem;
+    min-height: 0;
 }
 
 .extension-button-container {
-    width: 3.75rem;
-    height: 3.25rem;
+    width: 3.35rem;
+    height: 3.35rem;
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: .8rem;
+    left: .8rem;
     z-index: $z-index-extension-button;
-    background: $looks-secondary;
-
-    border: 1px solid $looks-secondary;
-    box-sizing: content-box; /* To match scratch-block vertical toolbox borders */
+    background: linear-gradient(145deg, #2970ff, #155eef);
+    border: 0;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    box-shadow: 0 8px 20px rgba(21, 94, 239, .28);
+    overflow: hidden;
+    transition:
+        transform 210ms cubic-bezier(.2, .9, .25, 1),
+        box-shadow 210ms ease;
+    animation: extension-pulse 3.4s ease-in-out infinite;
 }
 
-$fade-out-distance: 15px;
+[dir="rtl"] .extension-button-container {
+    left: auto;
+    right: .8rem;
+}
 
 .extension-button-container:before {
     content: "";
     position: absolute;
-    top: calc(calc(-1 * $fade-out-distance) - 1px);
-    left: -1px;
-    background: linear-gradient(rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15));
-    height: $fade-out-distance;
-    width: calc(100% + 0.5px);
+    inset: 0;
+    background: linear-gradient(120deg, transparent 15%, rgba(255, 255, 255, .2) 50%, transparent 85%);
+    transform: translateX(-120%);
+    transition: transform 420ms ease;
+    pointer-events: none;
 }
 
+.extension-button-container:hover {
+    transform: translateY(-3px) scale(1.06);
+    box-shadow: 0 13px 28px rgba(21, 94, 239, .34);
+}
+
+.extension-button-container:hover:before {
+    transform: translateX(120%);
+}
+
+.extension-button-container:active {
+    transform: translateY(0) scale(.94);
+}
 
 .extension-button {
+    position: relative;
+    z-index: 1;
     background: none;
     border: none;
     outline: none;
@@ -270,9 +271,16 @@ $fade-out-distance: 15px;
     user-select: none;
 }
 
+.extension-button:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, .85);
+    outline-offset: -5px;
+    border-radius: .85rem;
+}
+
 .extension-button-icon {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .12));
 }
 
 [dir="rtl"] .extension-button-icon {
@@ -283,11 +291,11 @@ $fade-out-distance: 15px;
     margin-top: 0;
 }
 
-/* Sprite Selection Watermark */
 .watermark {
     position: absolute;
     top: 1.25rem;
     pointer-events: none;
+    opacity: .55;
 }
 
 [dir="ltr"] .watermark {
@@ -298,13 +306,10 @@ $fade-out-distance: 15px;
     left: 1.25rem;
 }
 
-/* Menu */
-
 .menu-bar-position {
     position: relative;
     z-index: $z-index-menu-bar;
 }
-/* Alerts */
 
 .alerts-container {
     display: flex;
@@ -316,21 +321,27 @@ $fade-out-distance: 15px;
     pointer-events: none;
 }
 
-/*
-    Make the (background) page not scrollable when modals are open
-    This CSS class is automatically added to the body when react-modal is open
-*/
 :global(.ReactModal__Body--open) {
     overflow: hidden;
 }
 
-/* when in the browser's fullscreen mode, we need to put our own background to avoid just having black */
 .fullscreen-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* overridden by JS; this will be used if the browser can't understand that color */
     background-color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-wrapper,
+    .stage-and-target-wrapper,
+    .tab-panel.is-selected,
+    .extension-button-container,
+    .tab,
+    .tab img {
+        animation: none !important;
+        transition: none !important;
+    }
 }
