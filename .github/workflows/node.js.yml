@@ -18,5 +18,30 @@ jobs:
         node-version: 22
         cache: npm
     - run: npm ci
+    - name: Verify complete horizontal block engine
+      run: |
+        node <<'NODE'
+        const fs = require('fs');
+        const packageData = require('./node_modules/scratch-blocks/package.json');
+        if (packageData.browser !== './shim/horizontal.js') {
+          throw new Error(`scratch-blocks is not using the horizontal browser shim: ${packageData.browser}`);
+        }
+        const catalogue = fs.readFileSync('node_modules/scratch-blocks/blocks_compressed_horizontal.js', 'utf8');
+        const required = [
+          'motion_movesteps',
+          'looks_costume',
+          'sound_sounds_menu',
+          'sensing_of_object_menu',
+          'operator_add',
+          'data_variable',
+          'procedures_call'
+        ];
+        for (const name of required) {
+          if (!catalogue.includes('Blockly.Blocks.' + name)) {
+            throw new Error(`Installed horizontal block engine is missing ${name}`);
+          }
+        }
+        console.log('Complete Dry Eggs horizontal block engine verified.');
+        NODE
     - run: npm run build
     - run: npm run test:unit
