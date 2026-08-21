@@ -41,6 +41,10 @@ jobs:
             throw new Error(`Installed horizontal block engine is missing ${name}`);
           }
         }
+        const horizontalShim = fs.readFileSync('node_modules/scratch-blocks/shim/blocks_compressed_horizontal.js', 'utf8');
+        if (!horizontalShim.includes('goog=./shim/blockly_compressed_horizontal.goog')) {
+          throw new Error('Installed horizontal blocks shim is missing the Closure goog injection');
+        }
         console.log('Complete Dry Eggs horizontal block engine verified.');
         NODE
     - run: npm run build
