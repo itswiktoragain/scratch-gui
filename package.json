@@ -89,7 +89,7 @@
     "redux": "3.7.2",
     "redux-throttle": "0.1.1",
     "scratch-audio": "github:TurboWarp/scratch-audio#develop",
-    "scratch-blocks": "https://github.com/itswiktoragain/scratch-blocks/archive/4d60318950dce56c5b7ccb40dbdb0b49ce6dbd9b.tar.gz",
+    "scratch-blocks": "https://github.com/itswiktoragain/scratch-blocks/archive/54bf92b01b7b193c49d7979c944758236109ba77.tar.gz",
     "scratch-paint": "https://github.com/itswiktoragain/scratch-paint/archive/34d8802a4c783f1f61cad8fed0bc590b402ad455.tar.gz",
     "scratch-render": "https://github.com/itswiktoragain/scratch-render/archive/f86feec211b7689c05148e189f14f49edf1da290.tar.gz",
     "scratch-vm": "https://github.com/itswiktoragain/scratch-vm/archive/f9900b43929eed8f2479d4e639f6946a8dde9444.tar.gz",
