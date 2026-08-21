@@ -1,7 +1,7 @@
 {
   "name": "scratch-gui",
   "version": "3.2.37",
-  "description": "Wiktor Studio - a modern Scratch-compatible editor and runtime interface",
+  "description": "Dry Eggs - a modern Scratch-compatible editor with custom tools and an expanded extension library",
   "author": "Massachusetts Institute of Technology",
   "license": "GPL-3.0",
   "homepage": "https://itswiktoragain.github.io/scratch-gui/editor.html",
