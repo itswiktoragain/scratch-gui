@@ -68,55 +68,53 @@
     background: #fff;
 }
 
-/*
- * The block-search control also lives in the stage-menu row. Give the three
- * editor tabs a real, non-collapsible reservation so they can never turn into
- * the CodeCostumesSounds pile-up seen in narrow/loaded layouts.
- */
+/* Dry Eggs uses a bottom editor dock instead of the traditional top tab row. */
 .tab-list {
+    order: 2;
     height: $stage-menu-height;
-    width: 330px !important;
-    min-width: 330px;
-    max-width: 330px;
-    flex: 0 0 330px;
+    width: 100% !important;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 $stage-menu-height;
     display: flex !important;
     align-items: center;
-    gap: .28rem;
-    padding: .3rem .42rem;
+    justify-content: center;
+    gap: .38rem;
+    padding: .3rem .55rem;
     box-sizing: border-box;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-weight: 700;
     font-size: .76rem;
     margin: 0 !important;
     border: 0 !important;
-    border-right: 1px solid rgba(31, 57, 92, .09) !important;
-    border-bottom: 1px solid rgba(31, 57, 92, .08) !important;
+    border-top: 1px solid rgba(31, 57, 92, .11) !important;
     color: $text-primary;
-    background: linear-gradient(180deg, #ffffff, #f5f8fc);
+    background: linear-gradient(180deg, #f8fafd, #eef3f9);
+    box-shadow: 0 -5px 18px rgba(31, 57, 92, .06);
     overflow: visible;
     z-index: 30;
 }
 
 [dir="rtl"] .tab-list {
+    border-left: 0 !important;
     border-right: 0 !important;
-    border-left: 1px solid rgba(31, 57, 92, .09) !important;
 }
 
 .tab {
-    flex: 1 1 0 !important;
-    min-width: 98px !important;
-    max-width: none !important;
+    flex: 0 1 9.5rem !important;
+    min-width: 7.5rem !important;
+    max-width: 11.5rem !important;
     height: 2.06rem;
     margin: 0 !important;
     border: 0 !important;
     border-radius: .66rem;
-    padding: 0 .52rem !important;
+    padding: 0 .72rem !important;
     box-sizing: border-box;
     font-size: .72rem;
     background: transparent;
     color: $text-primary-transparent;
     display: flex !important;
-    gap: .3rem;
+    gap: .36rem;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -182,11 +180,12 @@
     box-shadow: inset 0 0 0 1px rgba(40, 111, 229, .3), 0 0 0 2px rgba(40, 111, 229, .08);
 }
 
-/* Block search is injected by the blocks layer. Keep it out of the tab reservation. */
+/* The block search remains at the top of the workspace now that tabs live below it. */
 :global(input[placeholder*="Ctrl+F"]),
 :global(input[placeholder^="Find"]) {
-    margin-left: 338px !important;
-    width: 205px !important;
+    margin-left: .55rem !important;
+    margin-top: .38rem !important;
+    width: 220px !important;
     height: 2rem !important;
     padding: 0 .72rem !important;
     border: 1px solid rgba(40, 72, 114, .16) !important;
@@ -214,6 +213,7 @@
 }
 
 .tab-panel {
+    order: 1;
     position: relative;
     flex-grow: 1;
     display: none;
@@ -393,14 +393,14 @@
 
 @media only screen and (max-width: 1160px) {
     .tab-list {
-        width: 306px !important;
-        min-width: 306px;
-        max-width: 306px;
-        flex-basis: 306px;
+        padding-left: .38rem;
+        padding-right: .38rem;
+        gap: .24rem;
     }
 
     .tab {
-        min-width: 90px !important;
+        flex-basis: 8rem !important;
+        min-width: 6.5rem !important;
         padding-left: .38rem !important;
         padding-right: .38rem !important;
         font-size: .69rem;
@@ -413,8 +413,8 @@
 
     :global(input[placeholder*="Ctrl+F"]),
     :global(input[placeholder^="Find"]) {
-        margin-left: 312px !important;
-        width: 180px !important;
+        margin-left: .42rem !important;
+        width: 190px !important;
     }
 }
 
