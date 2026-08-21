@@ -5,7 +5,9 @@ $space: 0.5rem;
 
 $sprites-per-row: 5;
 
-$menu-bar-height: 3rem;
+/* A slightly denser editor leaves more room for the workspace without
+   making the toolbar controls harder to hit. */
+$menu-bar-height: 2.75rem;
 $sprite-info-height: 6rem;
 $stage-menu-height: 2.75rem;
 
