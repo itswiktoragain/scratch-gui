@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - ui-overhaul-v1
   workflow_dispatch:
 
 permissions:
@@ -22,6 +21,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # This validates the repository's Pages configuration before spending
+      # several minutes building the editor. GitHub Pages must be enabled in
+      # Settings > Pages with "GitHub Actions" selected as the source.
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
