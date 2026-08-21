@@ -1,0 +1,44 @@
+name: Refresh fixed horizontal blocks pin
+
+on:
+  push:
+    branches:
+      - fix-horizontal-goog-runtime
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix-horizontal-goog-runtime
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Refresh dependency pin and lockfile
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          data.dependencies['scratch-blocks'] = 'https://github.com/itswiktoragain/scratch-blocks/archive/d30f6e07ff732e7739bf4701393399426b21adc8.tar.gz';
+          data.dependencies['lodash.throttle'] = '4.0.1';
+          fs.writeFileSync('package.json', JSON.stringify(data, null, 2) + '\n');
+          NODE
+          npm install --package-lock-only --ignore-scripts
+      - name: Commit dependency refresh
+        run: |
+          if git diff --quiet -- package.json package-lock.json; then
+            echo 'Dependency pin is already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json
+          git commit -m 'Refresh fixed horizontal blocks lockfile'
+          git push origin HEAD:fix-horizontal-goog-runtime
