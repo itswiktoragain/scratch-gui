@@ -1,13 +1,13 @@
 {
   "name": "scratch-gui",
   "version": "3.2.37",
-  "description": "Graphical User Interface for creating and running Scratch 3.0 projects",
+  "description": "Wiktor Studio - a modern Scratch-compatible editor and runtime interface",
   "author": "Massachusetts Institute of Technology",
   "license": "GPL-3.0",
-  "homepage": "https://github.com/LLK/scratch-gui#readme",
+  "homepage": "https://itswiktoragain.github.io/scratch-gui/editor.html",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LLK/scratch-gui.git"
+    "url": "https://github.com/itswiktoragain/scratch-gui.git"
   },
   "main": "./dist/scratch-gui.js",
   "scripts": {

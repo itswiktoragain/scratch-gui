@@ -5,15 +5,13 @@ import VM from 'scratch-vm';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 import log from '../lib/log';
 
-import extensionLibraryContent, {
-    galleryError,
-    galleryLoading,
-    galleryMore
-} from '../lib/libraries/extensions/index.jsx';
+import extensionLibraryContent from '../lib/libraries/extensions/index.jsx';
 import extensionTags from '../lib/libraries/tw-extension-tags';
 
 import LibraryComponent from '../components/library/library.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
+
+const EXTENSION_GALLERY_BASE = 'https://itswiktoragain.github.io/extensions-well-thats-quite-new/';
 
 const messages = defineMessages({
     extensionTitle: {
@@ -23,12 +21,48 @@ const messages = defineMessages({
     }
 });
 
+const galleryLoading = {
+    name: 'Wiktor Studio Extension Gallery',
+    href: EXTENSION_GALLERY_BASE,
+    extensionId: 'gallery',
+    iconURL: extensionIcon,
+    description: 'Loading your extension library…',
+    tags: ['tw'],
+    featured: true
+};
+
+const galleryMore = {
+    name: 'Wiktor Studio Extension Gallery',
+    href: EXTENSION_GALLERY_BASE,
+    extensionId: 'gallery',
+    iconURL: extensionIcon,
+    description: 'Open the full Wiktor Studio extension library.',
+    tags: ['tw'],
+    featured: true
+};
+
+const galleryError = {
+    name: 'Wiktor Studio Extension Gallery',
+    href: EXTENSION_GALLERY_BASE,
+    extensionId: 'gallery',
+    iconURL: extensionIcon,
+    description: 'The extension library could not be loaded. Open it directly to try again.',
+    tags: ['tw'],
+    featured: true
+};
+
 const toLibraryItem = extension => {
     if (typeof extension === 'object') {
-        return ({
+        const item = {
             rawURL: extension.iconURL || extensionIcon,
             ...extension
-        });
+        };
+
+        // Keep built-in gallery-backed extensions on our own extension origin.
+        if (item.extensionId === 'faceSensing') {
+            item.extensionURL = `${EXTENSION_GALLERY_BASE}lab/face-sensing.js`;
+        }
+        return item;
     }
     return extension;
 };
@@ -42,7 +76,7 @@ const translateGalleryItem = (extension, locale) => ({
 let cachedGallery = null;
 
 const fetchLibrary = async () => {
-    const res = await fetch('https://extensions.turbowarp.org/generated-metadata/extensions-v0.json');
+    const res = await fetch(`${EXTENSION_GALLERY_BASE}generated-metadata/extensions-v0.json`);
     if (!res.ok) {
         throw new Error(`HTTP status ${res.status}`);
     }
@@ -53,8 +87,8 @@ const fetchLibrary = async () => {
         description: extension.description,
         descriptionTranslations: extension.descriptionTranslations || {},
         extensionId: extension.id,
-        extensionURL: `https://extensions.turbowarp.org/${extension.slug}.js`,
-        iconURL: `https://extensions.turbowarp.org/${extension.image || 'images/unknown.svg'}`,
+        extensionURL: `${EXTENSION_GALLERY_BASE}${extension.slug}.js`,
+        iconURL: `${EXTENSION_GALLERY_BASE}${extension.image || 'images/unknown.svg'}`,
         tags: ['tw'],
         credits: [
             ...(extension.original || []),
@@ -74,9 +108,9 @@ const fetchLibrary = async () => {
             }
             return credit.name;
         }),
-        docsURI: extension.docs ? `https://extensions.turbowarp.org/${extension.slug}` : null,
+        docsURI: extension.docs ? `${EXTENSION_GALLERY_BASE}${extension.slug}` : null,
         samples: extension.samples ? extension.samples.map(sample => ({
-            href: `${process.env.ROOT}editor?project_url=https://extensions.turbowarp.org/samples/${encodeURIComponent(sample)}.sb3`,
+            href: `${process.env.ROOT}editor?project_url=${EXTENSION_GALLERY_BASE}samples/${encodeURIComponent(sample)}.sb3`,
             text: sample
         })) : null,
         incompatibleWithScratch: !extension.scratchCompatible,

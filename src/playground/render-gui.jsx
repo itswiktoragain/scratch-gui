@@ -1,14 +1,16 @@
 import React from 'react';
 import GUI from '../containers/gui.jsx';
+import studioLogo from '../lib/assets/wiktor-studio-logo.svg';
 
 const searchParams = new URLSearchParams(location.search);
-const cloudHost = searchParams.get('cloud_host') || 'wss://clouddata.turbowarp.org';
+const cloudHost = searchParams.get('cloud_host');
 
 const RenderGUI = props => (
     <GUI
-        cloudHost={cloudHost}
-        canUseCloud
-        hasCloudPermission
+        logo={studioLogo}
+        cloudHost={cloudHost || undefined}
+        canUseCloud={Boolean(cloudHost)}
+        hasCloudPermission={Boolean(cloudHost)}
         canSave={false}
         basePath={process.env.ROOT}
         canEditTitle
