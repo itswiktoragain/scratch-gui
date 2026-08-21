@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 154 40" role="img" aria-label="Dry Eggs">
+  <g transform="translate(2 2)">
+    <path d="M18 1C10.3 1 4 10.8 4 20.6 4 29.2 9.9 35 18 35s14-5.8 14-14.4C32 10.8 25.7 1 18 1Z" fill="#fff" fill-opacity=".96"/>
+    <circle cx="18" cy="22" r="7" fill="#ffbd2e"/>
+    <path d="M9 9.5C11.8 5.4 14.8 3 18 3" fill="none" stroke="#dce9ff" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+  <text x="44" y="26" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="760" letter-spacing="-.35">Dry Eggs</text>
+</svg>

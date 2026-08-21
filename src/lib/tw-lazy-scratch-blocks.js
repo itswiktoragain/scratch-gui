@@ -13,7 +13,9 @@ const load = () => {
     if (_ScratchBlocks) {
         return Promise.resolve();
     }
-    return import(/* webpackChunkName: "sb" */ 'scratch-blocks')
+    // Dry Eggs intentionally uses the horizontal/sideways block engine.
+    // Import the shim directly so package metadata can never fall back to vertical blocks.
+    return import(/* webpackChunkName: "sb" */ 'scratch-blocks/shim/horizontal.js')
         .then(m => {
             _ScratchBlocks = m.default;
             return _ScratchBlocks;

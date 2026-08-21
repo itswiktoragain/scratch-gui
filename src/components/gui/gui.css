@@ -3,20 +3,16 @@
 @import "../../css/z-index.css";
 
 @keyframes panel-enter {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes extension-pulse {
     0%, 100% {
-        box-shadow: 0 7px 18px rgba(21, 94, 239, .24);
+        box-shadow: 0 7px 18px rgba(40, 111, 229, .22);
     }
     50% {
-        box-shadow: 0 10px 24px rgba(21, 94, 239, .34);
+        box-shadow: 0 11px 25px rgba(40, 111, 229, .34);
     }
 }
 
@@ -24,16 +20,34 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #f5f7fb;
+    background: #f3f6fa;
 }
 
 .body-wrapper {
     flex-grow: 1;
-    background: linear-gradient(180deg, #f6f8fb 0%, #edf2f8 100%);
+    background: linear-gradient(180deg, #f7f9fc 0%, #edf2f8 100%);
 }
 
 .body-wrapper * {
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #aebbd0 transparent;
+}
+
+.body-wrapper *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.body-wrapper *::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #aebbd0;
+    background-clip: padding-box;
+}
+
+.body-wrapper *::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .flex-wrapper {
@@ -51,46 +65,59 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    background: #fff;
 }
 
+/* Dry Eggs uses a bottom editor dock instead of the traditional top tab row. */
 .tab-list {
+    order: 2;
     height: $stage-menu-height;
-    width: 250px;
-    display: flex;
+    width: 100% !important;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 $stage-menu-height;
+    display: flex !important;
     align-items: center;
-    flex-shrink: 0;
-    gap: .2rem;
-    padding: .28rem .35rem;
+    justify-content: center;
+    gap: .38rem;
+    padding: .3rem .55rem;
+    box-sizing: border-box;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-weight: 650;
+    font-weight: 700;
     font-size: .76rem;
     margin: 0 !important;
     border: 0 !important;
+    border-top: 1px solid rgba(31, 57, 92, .11) !important;
     color: $text-primary;
-    background: #f8fafc;
-    border-right: 1px solid rgba(16, 24, 40, .08) !important;
+    background: linear-gradient(180deg, #f8fafd, #eef3f9);
+    box-shadow: 0 -5px 18px rgba(31, 57, 92, .06);
+    overflow: visible;
+    z-index: 30;
 }
 
 [dir="rtl"] .tab-list {
+    border-left: 0 !important;
     border-right: 0 !important;
-    border-left: 1px solid rgba(16, 24, 40, .08) !important;
 }
 
 .tab {
-    flex: 1 1 0;
-    min-width: 0;
-    height: 2.05rem;
+    flex: 0 1 9.5rem !important;
+    min-width: 7.5rem !important;
+    max-width: 11.5rem !important;
+    height: 2.06rem;
     margin: 0 !important;
-    border: 0;
-    border-radius: .65rem;
-    padding: 0 .45rem;
+    border: 0 !important;
+    border-radius: .66rem;
+    padding: 0 .72rem !important;
+    box-sizing: border-box;
     font-size: .72rem;
     background: transparent;
     color: $text-primary-transparent;
-    display: flex;
-    gap: .25rem;
+    display: flex !important;
+    gap: .36rem;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     user-select: none;
     white-space: nowrap;
     cursor: pointer;
@@ -103,7 +130,7 @@
 
 .tab:hover {
     color: $text-primary;
-    background: #edf3ff;
+    background: #eaf2ff;
     transform: translateY(-1px);
 }
 
@@ -112,18 +139,18 @@
 }
 
 .tab.is-selected {
-    color: #155eef;
-    background: #e8f0ff;
-    box-shadow: inset 0 0 0 1px rgba(21, 94, 239, .16);
+    color: #1c64d8;
+    background: #e4efff;
+    box-shadow: inset 0 0 0 1px rgba(40, 111, 229, .18), 0 2px 5px rgba(32, 74, 136, .06);
     z-index: 4;
 }
 
 .tab img {
-    width: 1.05rem;
-    height: 1.05rem;
+    width: 1.04rem;
+    height: 1.04rem;
     flex: 0 0 auto;
     filter: grayscale(100%);
-    opacity: .72;
+    opacity: .7;
     transition: transform 160ms cubic-bezier(.2, .9, .25, 1), filter 160ms ease, opacity 160ms ease;
 }
 
@@ -150,7 +177,30 @@
 .tab.is-selected:focus {
     outline: none;
     border-color: transparent;
-    box-shadow: inset 0 0 0 1px rgba(21, 94, 239, .28), 0 0 0 2px rgba(21, 94, 239, .08);
+    box-shadow: inset 0 0 0 1px rgba(40, 111, 229, .3), 0 0 0 2px rgba(40, 111, 229, .08);
+}
+
+/* The block search remains at the top of the workspace now that tabs live below it. */
+:global(input[placeholder*="Ctrl+F"]),
+:global(input[placeholder^="Find"]) {
+    margin-left: .55rem !important;
+    margin-top: .38rem !important;
+    width: 220px !important;
+    height: 2rem !important;
+    padding: 0 .72rem !important;
+    border: 1px solid rgba(40, 72, 114, .16) !important;
+    border-radius: .62rem !important;
+    background: #fff !important;
+    color: #26364d !important;
+    box-shadow: 0 1px 3px rgba(19, 44, 80, .05) !important;
+    transition: border-color 140ms ease, box-shadow 140ms ease !important;
+}
+
+:global(input[placeholder*="Ctrl+F"]:focus),
+:global(input[placeholder^="Find"]:focus) {
+    border-color: rgba(40, 111, 229, .55) !important;
+    box-shadow: 0 0 0 3px rgba(40, 111, 229, .1) !important;
+    outline: none !important;
 }
 
 .tabs {
@@ -159,9 +209,11 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    background: #fff;
 }
 
 .tab-panel {
+    order: 1;
     position: relative;
     flex-grow: 1;
     display: none;
@@ -185,6 +237,13 @@
     padding-left: $space;
     padding-right: $space;
     flex-basis: 0;
+    background: #edf2f8;
+    border-left: 1px solid rgba(31, 57, 92, .08);
+}
+
+[dir="rtl"] .stage-and-target-wrapper {
+    border-left: 0;
+    border-right: 1px solid rgba(31, 57, 92, .08);
 }
 
 .target-wrapper {
@@ -203,8 +262,8 @@
     left: 0;
     right: 0;
     z-index: $z-index-extension-button;
-    background: linear-gradient(145deg, #2970ff, #155eef);
-    border: 1px solid #155eef;
+    background: linear-gradient(145deg, #347df0, #1d63d8);
+    border: 1px solid #1d63d8;
     border-radius: 0 .9rem 0 0;
     box-sizing: content-box;
     overflow: hidden;
@@ -230,7 +289,7 @@
 
 .extension-button-container:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(21, 94, 239, .32);
+    box-shadow: 0 10px 24px rgba(40, 111, 229, .3);
 }
 
 .extension-button-container:hover:before {
@@ -276,7 +335,7 @@
     position: absolute;
     top: 1.25rem;
     pointer-events: none;
-    opacity: .55;
+    opacity: .32;
 }
 
 [dir="ltr"] .watermark {
@@ -315,20 +374,47 @@
     background-color: white;
 }
 
+/* Dry Eggs native editor modes. These never modify project state. */
+:global(html[data-dry-eggs-coding-focus="true"]) .stage-and-target-wrapper {
+    display: none;
+}
+
+:global(html[data-dry-eggs-coding-focus="true"]) .editor-wrapper {
+    flex-basis: 100%;
+}
+
+:global(html[data-dry-eggs-motion="off"]) .page-wrapper *,
+:global(html[data-dry-eggs-motion="off"]) .page-wrapper *:before,
+:global(html[data-dry-eggs-motion="off"]) .page-wrapper *:after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+}
+
 @media only screen and (max-width: 1160px) {
     .tab-list {
-        width: 220px;
+        padding-left: .38rem;
+        padding-right: .38rem;
+        gap: .24rem;
     }
 
     .tab {
-        padding-left: .3rem;
-        padding-right: .3rem;
-        font-size: .68rem;
+        flex-basis: 8rem !important;
+        min-width: 6.5rem !important;
+        padding-left: .38rem !important;
+        padding-right: .38rem !important;
+        font-size: .69rem;
     }
 
     .tab img {
         width: .95rem;
         height: .95rem;
+    }
+
+    :global(input[placeholder*="Ctrl+F"]),
+    :global(input[placeholder^="Find"]) {
+        margin-left: .42rem !important;
+        width: 190px !important;
     }
 }
 
