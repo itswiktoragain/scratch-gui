@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 40" role="img" aria-label="Wiktor Studio">
+  <rect x="1" y="1" width="38" height="38" rx="11" fill="#ffffff" fill-opacity="0.18" stroke="#ffffff" stroke-opacity="0.35"/>
+  <path d="M9 11l5.2 18h4.4L22 18.8 25.4 29h4.4L35 11h-4.7l-2.9 11.5L23.6 11h-3.3l-3.8 11.5L13.7 11z" fill="#fff"/>
+  <text x="49" y="25.5" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing=".1">Wiktor Studio</text>
+</svg>
