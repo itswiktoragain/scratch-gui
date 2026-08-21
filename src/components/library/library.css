@@ -1,18 +1,32 @@
 @import "../../css/units.css";
 @import "../../css/colors.css";
 
+@keyframes library-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .library-scroll-grid {
     display: flex;
     justify-content: flex-start;
     align-content: flex-start;
     align-items: flex-start;
-    background: $ui-secondary;
+    gap: .35rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
     flex-grow: 1;
     flex-wrap: wrap;
     overflow-y: auto;
-    height: auto;
-    padding: 0.5rem;
+    overflow-x: hidden;
     height: calc(100% - $library-header-height);
+    padding: .85rem;
+    scrollbar-color: #b7c3d4 transparent;
+    animation: library-enter 260ms cubic-bezier(.2, .9, .25, 1) both;
 }
 
 .library-scroll-grid.withFilterBar {
@@ -24,14 +38,16 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    height: calc($library-filter-bar-height + 2rem); /* padding */
-    background-color: $looks-transparent;
+    height: calc($library-filter-bar-height + 2rem);
+    background: #ffffff;
     padding: 0 1rem;
     font-size: .875rem;
+    border-bottom: 1px solid rgba(16, 24, 40, .08);
+    box-shadow: 0 2px 8px rgba(16, 24, 40, .04);
 }
 
 .filter-bar-item {
-    margin-right: .75rem;
+    margin-right: .65rem;
 }
 
 .filter {
@@ -39,24 +55,33 @@
 }
 
 .filter-input {
-    width: 11.5rem;
-    transition: .2s;
+    width: 12rem;
+    min-height: 2.35rem;
+    border-radius: .75rem !important;
+    transition:
+        width 240ms cubic-bezier(.2, .9, .25, 1),
+        box-shadow 180ms ease,
+        border-color 180ms ease;
 }
 
 .filter-input:focus,
 .filter-input:not([value=""]) {
-    width: 18.75rem;
+    width: 19rem;
+    box-shadow: 0 0 0 3px rgba(41, 112, 255, .12);
 }
 
 .divider {
-    transform: scaleY(1.39);
-    height: $library-filter-bar-height;
+    transform: none;
+    height: 1.75rem;
+    opacity: .45;
 }
 
 .tag-wrapper {
     display: flex;
     flex-direction: row;
+    align-items: center;
     flex-wrap: wrap;
+    gap: .25rem;
     height: $library-filter-bar-height;
     overflow: hidden;
 }
@@ -67,4 +92,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .library-scroll-grid,
+    .filter-input {
+        animation: none !important;
+        transition: none !important;
+    }
 }
