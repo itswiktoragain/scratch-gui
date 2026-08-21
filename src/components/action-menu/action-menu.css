@@ -4,11 +4,15 @@
 
 $main-button-size: 2.75rem;
 $more-button-size: 2.25rem;
+$dry-eggs-primary: #286fe5;
+$dry-eggs-hover: #1d63d8;
+$dry-eggs-dark: #174fae;
+$dry-eggs-ring: rgba(40, 111, 229, .24);
 
 .menu-container {
     display: flex;
     flex-direction: column-reverse;
-    transition: 0.2s;
+    transition: transform .18s ease;
     position: relative;
 }
 
@@ -18,11 +22,11 @@ $more-button-size: 2.25rem;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background: $looks-secondary;
+    font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: $dry-eggs-primary;
     outline: none;
     border: none;
-    transition: background-color 0.2s;
+    transition: background-color .18s ease, transform .18s cubic-bezier(.2,.9,.25,1), box-shadow .18s ease;
 }
 
 button::-moz-focus-inner {
@@ -30,7 +34,7 @@ button::-moz-focus-inner {
 }
 
 .button:hover {
-    background: $extensions-primary;
+    background: $dry-eggs-hover;
 }
 
 .button:active {
@@ -45,14 +49,18 @@ button::-moz-focus-inner {
     border-radius: 100%;
     width: $main-button-size;
     height: $main-button-size;
-    box-shadow: 0 0 0 4px $looks-transparent;
+    box-shadow: 0 0 0 4px $dry-eggs-ring, 0 6px 16px rgba(23, 79, 174, .18);
     z-index: $z-index-add-button;
-    transition: transform, box-shadow 0.5s;
+    transition: transform .2s cubic-bezier(.2,.9,.25,1), box-shadow .2s ease, background-color .18s ease;
 }
 
 .main-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 0 6px $looks-transparent;
+    transform: translateY(-2px) scale(1.07);
+    box-shadow: 0 0 0 6px $dry-eggs-ring, 0 10px 22px rgba(23, 79, 174, .24);
+}
+
+.main-button:active {
+    transform: scale(.96);
 }
 
 .main-icon {
@@ -65,34 +73,27 @@ button::-moz-focus-inner {
 }
 
 .more-buttons-outer {
-    /*
-        Need to use two divs to set different overflow x/y
-        which is needed to get animation to look right while
-        allowing the tooltips to be visible.
-    */
     overflow-y: hidden;
-
-    background: $looks-secondary-dark;
+    background: $dry-eggs-dark;
     border-top-left-radius: $more-button-size;
     border-top-right-radius: $more-button-size;
     width: $more-button-size;
     margin-left: calc(($main-button-size - $more-button-size) / 2);
     margin-right: calc(($main-button-size - $more-button-size) / 2);
-
     position: absolute;
     bottom: calc($main-button-size);
-
     margin-bottom: calc($main-button-size / -2);
     padding-bottom: calc($main-button-size / 2);
+    box-shadow: 0 -6px 18px rgba(23, 79, 174, .12);
 }
 
 .more-buttons {
     max-height: 0;
-    transition: max-height 1s;
+    transition: max-height .5s cubic-bezier(.2,.9,.25,1);
     overflow-x: visible;
     display: flex;
     flex-direction: column;
-    z-index: 10; /* @todo justify */
+    z-index: 10;
 }
 
 .file-input {
@@ -100,14 +101,14 @@ button::-moz-focus-inner {
 }
 
 .expanded .more-buttons {
-    max-height: 1000px; /* Arbitrary, needs to be a value in order for animation to run */
+    max-height: 1000px;
 }
 
 .force-hidden .more-buttons {
-    display: none; /* This property does not animate */
+    display: none;
 }
 
-.more-buttons:first-child { /* Round off top button */
+.more-buttons:first-child {
     border-top-right-radius: $more-button-size;
     border-top-left-radius: $more-button-size;
 }
@@ -115,7 +116,11 @@ button::-moz-focus-inner {
 .more-button {
     width: $more-button-size;
     height: $more-button-size;
-    background: $looks-secondary-dark;
+    background: $dry-eggs-dark;
+}
+
+.more-button:hover {
+    background: $dry-eggs-hover;
 }
 
 .more-icon {
@@ -127,21 +132,18 @@ button::-moz-focus-inner {
     opacity: 0.5;
 }
 
-/*
-    @todo needs to be refactored with coming soon tooltip overrides.
-    The "!important"s are for the same reason as with coming soon, the library
-    is not very easy to style.
-*/
 .tooltip {
-    background-color: $extensions-primary !important;
+    background-color: $dry-eggs-hover !important;
     opacity: 1 !important;
-    border: 1px solid hsla(0, 0%, 0%, .1) !important;
-    box-shadow: 0 0 .5rem hsla(0, 0%, 0%, .25) !important;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    border: 1px solid rgba(0, 0, 0, .1) !important;
+    border-radius: $form-radius !important;
+    box-shadow: 0 5px 16px rgba(18, 48, 91, .25) !important;
+    font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    z-index: $z-index-tooltip !important;
 }
 
 .tooltip:after {
-    background-color: $extensions-primary;
+    background-color: $dry-eggs-hover;
 }
 
 .coming-soon-tooltip {
@@ -149,15 +151,7 @@ button::-moz-focus-inner {
 }
 
 .coming-soon-tooltip:after {
-    background-color: $data-primary !important;
-}
-
-.tooltip {
-    border: 1px solid hsla(0, 0%, 0%, .1) !important;
-    border-radius: $form-radius !important;
-    box-shadow: 0 0 .5rem hsla(0, 0%, 0%, .25) !important;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-    z-index: $z-index-tooltip !important;
+    background-color: $data-primary;
 }
 
 $arrow-size: 0.5rem;
@@ -166,10 +160,10 @@ $arrow-rounding: 0.125rem;
 
 .tooltip:after {
     content: "";
-    border-top: 1px solid hsla(0, 0%, 0%, .1) !important;
+    border-top: 1px solid rgba(0, 0, 0, .1) !important;
     border-left: 0 !important;
     border-bottom: 0 !important;
-    border-right: 1px solid hsla(0, 0%, 0%, .1) !important;
+    border-right: 1px solid rgba(0, 0, 0, .1) !important;
     border-radius: $arrow-rounding;
     height: $arrow-size !important;
     width: $arrow-size !important;
@@ -197,4 +191,10 @@ $arrow-rounding: 0.125rem;
     margin-left: $arrow-inset !important;
     top: $arrow-inset !important;
     transform: rotate(-45deg) !important;
+}
+
+:global(html[data-dry-eggs-motion="off"]) .button,
+:global(html[data-dry-eggs-motion="off"]) .main-button,
+:global(html[data-dry-eggs-motion="off"]) .more-buttons {
+    transition: none !important;
 }
