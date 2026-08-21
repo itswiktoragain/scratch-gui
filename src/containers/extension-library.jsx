@@ -30,6 +30,16 @@ const DRY_EGGS_PICKS = new Set([
     'bitwise'
 ]);
 
+const nativeDryEggsUtilities = {
+    name: 'Dry Eggs Utilities',
+    extensionId: 'dryEggs',
+    iconURL: extensionIcon,
+    description: 'Built-in clipboard, storage, browser, UUID, time, URL, and device utility blocks. Works without downloading extension JavaScript.',
+    tags: ['tw'],
+    incompatibleWithScratch: true,
+    featured: true
+};
+
 const messages = defineMessages({
     extensionTitle: {
         defaultMessage: 'Dry Eggs Extension Library',
@@ -242,7 +252,11 @@ class ExtensionLibrary extends React.PureComponent {
         }
     }
     render () {
-        let library = extensionLibraryContent.map(toLibraryItem);
+        let library = [
+            toLibraryItem(nativeDryEggsUtilities),
+            '---',
+            ...extensionLibraryContent.map(toLibraryItem)
+        ];
         library.push('---');
 
         if (this.state.gallery) {
