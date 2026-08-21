@@ -1,37 +1,39 @@
 const guiColors = {
     'color-scheme': 'light',
 
-    'ui-primary': '#f3f6fa',
-    'ui-secondary': '#eef2f7',
-    'ui-tertiary': '#dbe2ea',
+    'ui-primary': '#f4f7fb',
+    'ui-secondary': '#edf2f8',
+    'ui-tertiary': '#dce4ee',
 
-    'ui-modal-overlay': 'rgba(20, 37, 63, 0.45)',
+    'ui-modal-overlay': 'rgba(17, 31, 55, 0.48)',
     'ui-modal-background': '#ffffff',
-    'ui-modal-foreground': '#344054',
-    'ui-modal-header-background': '#2f80ed',
+    'ui-modal-foreground': '#26364d',
+    'ui-modal-header-background': '#286fe5',
     'ui-modal-header-foreground': '#ffffff',
 
     'ui-white': '#ffffff',
-    'ui-white-dim': 'rgba(255, 255, 255, 0.8)',
-    'ui-white-transparent': 'rgba(255, 255, 255, 0.24)',
+    'ui-white-dim': 'rgba(255, 255, 255, 0.84)',
+    'ui-white-transparent': 'rgba(255, 255, 255, 0.25)',
     'ui-transparent': 'rgba(255, 255, 255, 0)',
 
-    'ui-black-transparent': 'rgba(17, 24, 39, 0.12)',
+    'ui-black-transparent': 'rgba(21, 40, 72, 0.13)',
 
-    'text-primary': '#344054',
-    'text-primary-transparent': 'rgba(52, 64, 84, 0.74)',
+    'text-primary': '#26364d',
+    'text-primary-transparent': 'rgba(38, 54, 77, 0.72)',
 
     'motion-primary': '#4c97ff',
     'motion-primary-transparent': 'rgba(76, 151, 255, 0.9)',
     'motion-tertiary': '#3373cc',
 
-    'looks-secondary': '#2f80ed',
-    'looks-transparent': 'rgba(47, 128, 237, 0.35)',
-    'looks-light-transparent': 'rgba(47, 128, 237, 0.14)',
-    'looks-secondary-dark': '#2167c7',
+    // Keep semantic category colors semantic. Dry Eggs blue is for application chrome,
+    // not a replacement for the Looks category's established purple identity.
+    'looks-secondary': '#855cd6',
+    'looks-transparent': 'rgba(133, 92, 214, 0.35)',
+    'looks-light-transparent': 'rgba(133, 92, 214, 0.15)',
+    'looks-secondary-dark': '#714eb6',
 
-    'red-primary': '#ff661a',
-    'red-tertiary': '#e64d00',
+    'red-primary': '#ff6680',
+    'red-tertiary': '#e64d66',
 
     'sound-primary': '#cf63cf',
     'sound-tertiary': '#bd42bd',
@@ -55,8 +57,8 @@ const guiColors = {
 
     'drop-highlight': '#8dbdff',
 
-    'menu-bar-background': '#2f80ed',
-    'menu-bar-background-image': 'linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0))',
+    'menu-bar-background': '#286fe5',
+    'menu-bar-background-image': 'linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0) 48%, rgba(8,57,145,0.08))',
     'menu-bar-foreground': '#ffffff',
 
     'assets-background': '#ffffff',
@@ -65,10 +67,10 @@ const guiColors = {
 
     'popover-background': '#ffffff',
 
-    'shadow': 'rgba(17, 24, 39, 0.14)',
+    'shadow': 'rgba(17, 31, 55, 0.16)',
 
-    'badge-background': '#e4efff',
-    'badge-border': '#bed8ff',
+    'badge-background': '#e7f0ff',
+    'badge-border': '#bed6ff',
 
     'fullscreen-background': '#f7f9fc',
     'fullscreen-accent': '#e8edf3',
@@ -76,8 +78,8 @@ const guiColors = {
     'page-background': '#ffffff',
     'page-foreground': '#111827',
 
-    'project-title-inactive': 'rgba(255, 255, 255, 0.18)',
-    'project-title-hover': 'rgba(255, 255, 255, 0.34)',
+    'project-title-inactive': 'rgba(255, 255, 255, 0.17)',
+    'project-title-hover': 'rgba(255, 255, 255, 0.32)',
 
     'link-color': '#1d5fd0',
 
