@@ -12,41 +12,58 @@ import LibraryComponent from '../components/library/library.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
 
 const EXTENSION_GALLERY_BASE = 'https://itswiktoragain.github.io/extensions-well-thats-quite-new/';
+const GALLERY_CACHE_KEY = 'dry-eggs-extension-metadata-v1';
+const GALLERY_TIMEOUT = 8000;
+
+const DRY_EGGS_PICKS = new Set([
+    'clipboard',
+    'files',
+    'gamepad',
+    'local-storage',
+    'runtime-options',
+    'pointerlock',
+    'stretch',
+    'encoding',
+    'text',
+    'battery',
+    'fetch',
+    'bitwise'
+]);
 
 const messages = defineMessages({
     extensionTitle: {
-        defaultMessage: 'Choose an Extension',
+        defaultMessage: 'Dry Eggs Extension Library',
         description: 'Heading for the extension library',
         id: 'gui.extensionLibrary.chooseAnExtension'
     }
 });
 
 const galleryLoading = {
-    name: 'Wiktor Studio Extension Gallery',
+    name: 'Dry Eggs Extension Library',
     href: EXTENSION_GALLERY_BASE,
     extensionId: 'gallery',
     iconURL: extensionIcon,
-    description: 'Loading your extension library…',
+    description: 'Loading the Dry Eggs extension library…',
     tags: ['tw'],
     featured: true
 };
 
 const galleryMore = {
-    name: 'Wiktor Studio Extension Gallery',
+    name: 'Open the full Dry Eggs library',
     href: EXTENSION_GALLERY_BASE,
     extensionId: 'gallery',
     iconURL: extensionIcon,
-    description: 'Open the full Wiktor Studio extension library.',
+    description: 'Browse every extension, documentation page, and sample project.',
     tags: ['tw'],
     featured: true
 };
 
 const galleryError = {
-    name: 'Wiktor Studio Extension Gallery',
+    name: 'Extension library is temporarily offline',
     href: EXTENSION_GALLERY_BASE,
     extensionId: 'gallery',
     iconURL: extensionIcon,
-    description: 'The extension library could not be loaded. Open it directly to try again.',
+    description: 'Built-in extensions are still available. Open the Dry Eggs library site to retry.',
     tags: ['tw'],
     featured: true
 };
@@ -58,7 +75,6 @@ const toLibraryItem = extension => {
             ...extension
         };
 
-        // Keep built-in gallery-backed extensions on our own extension origin.
         if (item.extensionId === 'faceSensing') {
             item.extensionURL = `${EXTENSION_GALLERY_BASE}lab/face-sensing.js`;
         }
@@ -73,14 +89,10 @@ const translateGalleryItem = (extension, locale) => ({
     description: extension.descriptionTranslations[locale] || extension.description
 });
 
-let cachedGallery = null;
-
-const fetchLibrary = async () => {
-    const res = await fetch(`${EXTENSION_GALLERY_BASE}generated-metadata/extensions-v0.json`);
-    if (!res.ok) {
-        throw new Error(`HTTP status ${res.status}`);
+const mapMetadataToLibrary = data => {
+    if (!data || !Array.isArray(data.extensions)) {
+        throw new Error('Dry Eggs extension metadata is missing the extensions array');
     }
-    const data = await res.json();
     return data.extensions.map(extension => ({
         name: extension.name,
         nameTranslations: extension.nameTranslations || {},
@@ -108,14 +120,53 @@ const fetchLibrary = async () => {
             }
             return credit.name;
         }),
-        docsURI: extension.docs ? `${EXTENSION_GALLERY_BASE}${extension.slug}` : null,
+        docsURI: extension.docs ? `${EXTENSION_GALLERY_BASE}${extension.slug}/` : null,
         samples: extension.samples ? extension.samples.map(sample => ({
-            href: `${process.env.ROOT}editor?project_url=${EXTENSION_GALLERY_BASE}samples/${encodeURIComponent(sample)}.sb3`,
+            href: `${process.env.ROOT}editor.html?project_url=${encodeURIComponent(`${EXTENSION_GALLERY_BASE}samples/${sample}.sb3`)}`,
             text: sample
         })) : null,
         incompatibleWithScratch: !extension.scratchCompatible,
-        featured: true
+        featured: true,
+        dryEggsPick: DRY_EGGS_PICKS.has(extension.slug)
     }));
+};
+
+const readPersistentCache = () => {
+    try {
+        const text = localStorage.getItem(GALLERY_CACHE_KEY);
+        if (!text) return null;
+        return mapMetadataToLibrary(JSON.parse(text));
+    } catch (e) {
+        return null;
+    }
+};
+
+let cachedGallery = readPersistentCache();
+
+const fetchLibrary = async () => {
+    const controller = typeof AbortController === 'undefined' ? null : new AbortController();
+    const timeout = setTimeout(() => {
+        if (controller) controller.abort();
+    }, GALLERY_TIMEOUT);
+    try {
+        const res = await fetch(`${EXTENSION_GALLERY_BASE}generated-metadata/extensions-v0.json`, {
+            cache: 'no-store',
+            signal: controller ? controller.signal : undefined
+        });
+        if (!res.ok) {
+            throw new Error(`Dry Eggs extension library returned HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const mapped = mapMetadataToLibrary(data);
+        try {
+            localStorage.setItem(GALLERY_CACHE_KEY, JSON.stringify(data));
+        } catch (e) {
+            // The in-memory cache still works when persistent storage is disabled.
+        }
+        return mapped;
+    } finally {
+        clearTimeout(timeout);
+    }
 };
 
 class ExtensionLibrary extends React.PureComponent {
@@ -131,29 +182,29 @@ class ExtensionLibrary extends React.PureComponent {
         };
     }
     componentDidMount () {
-        if (!this.state.gallery) {
-            const timeout = setTimeout(() => {
-                this.setState({
-                    galleryTimedOut: true
-                });
-            }, 750);
+        const timeout = setTimeout(() => {
+            if (!this.state.gallery) {
+                this.setState({galleryTimedOut: true});
+            }
+        }, 900);
 
-            fetchLibrary()
-                .then(gallery => {
-                    cachedGallery = gallery;
-                    this.setState({
-                        gallery
-                    });
-                    clearTimeout(timeout);
-                })
-                .catch(error => {
-                    log.error(error);
-                    this.setState({
-                        galleryError: error
-                    });
-                    clearTimeout(timeout);
+        fetchLibrary()
+            .then(gallery => {
+                cachedGallery = gallery;
+                this.setState({
+                    gallery,
+                    galleryError: null,
+                    galleryTimedOut: false
                 });
-        }
+                clearTimeout(timeout);
+            })
+            .catch(error => {
+                log.error(error);
+                if (!this.state.gallery) {
+                    this.setState({galleryError: error});
+                }
+                clearTimeout(timeout);
+            });
     }
     handleItemSelect (item) {
         if (item.href) {
@@ -191,24 +242,24 @@ class ExtensionLibrary extends React.PureComponent {
         }
     }
     render () {
-        let library = null;
-        if (this.state.gallery || this.state.galleryError || this.state.galleryTimedOut) {
-            library = extensionLibraryContent.map(toLibraryItem);
-            library.push('---');
-            if (this.state.gallery) {
-                library.push(toLibraryItem(galleryMore));
-                const locale = this.props.intl.locale;
-                library.push(
-                    ...this.state.gallery
-                        .filter(i => i.extensionId !== 'faceSensing')
-                        .map(i => translateGalleryItem(i, locale))
-                        .map(toLibraryItem)
-                );
-            } else if (this.state.galleryError) {
-                library.push(toLibraryItem(galleryError));
-            } else {
-                library.push(toLibraryItem(galleryLoading));
-            }
+        let library = extensionLibraryContent.map(toLibraryItem);
+        library.push('---');
+
+        if (this.state.gallery) {
+            library.push(toLibraryItem(galleryMore));
+            const locale = this.props.intl.locale;
+            const galleryItems = this.state.gallery
+                .filter(i => i.extensionId !== 'faceSensing')
+                .sort((a, b) => Number(b.dryEggsPick) - Number(a.dryEggsPick))
+                .map(i => translateGalleryItem(i, locale))
+                .map(toLibraryItem);
+            library.push(...galleryItems);
+        } else if (this.state.galleryError) {
+            library.push(toLibraryItem(galleryError));
+        } else if (this.state.galleryTimedOut) {
+            library.push(toLibraryItem(galleryLoading));
+        } else {
+            library.push(toLibraryItem(galleryLoading));
         }
 
         return (
