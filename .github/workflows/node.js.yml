@@ -38,11 +38,26 @@ jobs:
           'procedures_call',
           'event_broadcast_menu',
           'event_broadcast',
-          'event_whenbroadcastreceived'
+          'event_whenbroadcastreceived',
+          'control_repeat',
+          'control_forever',
+          'control_if',
+          'control_if_else'
         ];
         for (const name of required) {
           if (!catalogue.includes('Blockly.Blocks.' + name)) {
             throw new Error(`Installed horizontal block engine is missing ${name}`);
+          }
+        }
+
+        for (const legacy of [
+          'icons/control_repeat.svg',
+          'icons/control_forever.svg',
+          'icons/control_wait.svg',
+          'icons/control_stop.svg'
+        ]) {
+          if (catalogue.includes(legacy)) {
+            throw new Error(`Legacy horizontal Control override is still installed: ${legacy}`);
           }
         }
 
@@ -76,17 +91,6 @@ jobs:
           throw new Error('Installed horizontal layout still tightens inputs from the child connection');
         }
 
-        const horizontalEvents = fs.readFileSync('node_modules/scratch-blocks/blocks_horizontal/event.js', 'utf8');
-        for (const forbidden of [
-          "Blockly.Blocks['event_broadcast']",
-          "Blockly.Blocks['event_broadcastandwait']",
-          "Blockly.Blocks['event_whenbroadcastreceived']"
-        ]) {
-          if (horizontalEvents.includes(forbidden)) {
-            throw new Error(`Installed horizontal events override normal Scratch messaging: ${forbidden}`);
-          }
-        }
-
         const toolbox = fs.readFileSync('src/lib/make-toolbox-xml.js', 'utf8');
         const normalMessageShadows = (toolbox.match(/<shadow type="event_broadcast_menu"><\/shadow>/g) || []).length;
         if (normalMessageShadows !== 2) {
@@ -96,7 +100,7 @@ jobs:
           throw new Error('Numeric broadcast shadows are still present in the Dry Eggs toolbox');
         }
 
-        console.log('Corrected Dry Eggs horizontal block engine verified.');
+        console.log('Modern Scratch definitions + Dry Eggs horizontal renderer verified.');
         NODE
     - run: npm run build
     - run: npm run test:unit
