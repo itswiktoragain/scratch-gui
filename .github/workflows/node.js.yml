@@ -26,6 +26,7 @@ jobs:
         if (packageData.browser !== './shim/horizontal.js') {
           throw new Error(`scratch-blocks is not using the horizontal browser shim: ${packageData.browser}`);
         }
+
         const catalogue = fs.readFileSync('node_modules/scratch-blocks/blocks_compressed_horizontal.js', 'utf8');
         const required = [
           'motion_movesteps',
@@ -41,11 +42,57 @@ jobs:
             throw new Error(`Installed horizontal block engine is missing ${name}`);
           }
         }
+
         const horizontalShim = fs.readFileSync('node_modules/scratch-blocks/shim/blocks_compressed_horizontal.js', 'utf8');
         if (!horizontalShim.includes('goog=./shim/blockly_compressed_horizontal.goog')) {
           throw new Error('Installed horizontal blocks shim is missing the Closure goog injection');
         }
+
+        const entryShim = fs.readFileSync('node_modules/scratch-blocks/shim/horizontal.js', 'utf8');
+        if (!entryShim.includes("require('./dry-eggs-horizontal-layout')(Blockly)")) {
+          throw new Error('Installed horizontal entry shim is missing the Dry Eggs layout layer');
+        }
+
+        const layout = fs.readFileSync('node_modules/scratch-blocks/shim/dry-eggs-horizontal-layout.js', 'utf8');
+        for (const token of [
+          'contentItems',
+          'OUTPUT_SHAPE_HEXAGONAL',
+          'OUTPUT_SHAPE_ROUND',
+          'targetConnection.tighten_',
+          "shapes.push('boolean')",
+          "shapes.push('round')"
+        ]) {
+          if (!layout.includes(token)) {
+            throw new Error(`Installed horizontal layout is missing ${token}`);
+          }
+        }
+
+        const toolbox = fs.readFileSync('src/lib/make-toolbox-xml.js', 'utf8');
+        if (toolbox.includes('<shadow type="event_broadcast_menu"></shadow>')) {
+          throw new Error('Dry Eggs toolbox still uses the normal broadcast dropdown shadow');
+        }
+        const numericMessageShadows = (toolbox.match(/<shadow type="math_number"><field name="NUM">1<\/field><\/shadow>/g) || []).length;
+        if (numericMessageShadows < 2) {
+          throw new Error('Dry Eggs numeric message shadows are missing from the toolbox');
+        }
+
         console.log('Complete Dry Eggs horizontal block engine verified.');
+        NODE
+    - name: Verify Dry Eggs numeric message runtime
+      run: |
+        node <<'NODE'
+        const Event = require('./node_modules/scratch-vm/src/blocks/scratch3_event');
+        const Runtime = require('./node_modules/scratch-vm/src/engine/runtime');
+        const runtime = new Runtime();
+        const event = new Event(runtime);
+        const util = {runtime};
+        if (event._getBroadcastName({BROADCAST_INPUT: 4}, util) !== '4') {
+          throw new Error('Numeric message channel 4 did not resolve correctly');
+        }
+        if (event._getBroadcastName({BROADCAST_INPUT: '12.5'}, util) !== '12.5') {
+          throw new Error('String numeric message channel did not resolve correctly');
+        }
+        console.log('Dry Eggs numeric message runtime verified.');
         NODE
     - run: npm run build
     - run: npm run test:unit
