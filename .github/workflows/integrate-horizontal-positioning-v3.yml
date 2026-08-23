@@ -1,0 +1,77 @@
+name: Integrate horizontal positioning v3
+
+on:
+  push:
+    branches:
+      - fix-horizontal-positioning-v3
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix-horizontal-positioning-v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Wait for fixed horizontal build
+        env:
+          SOURCE_SHA: 2315126d8c3ac7d6e737f55343ac4c013ed70fca
+        run: |
+          for attempt in $(seq 1 60); do
+            curl -fsSL https://api.github.com/repos/itswiktoragain/scratch-blocks/commits/develop-builds > /tmp/blocks-build.json
+            BUILD_SHA=$(jq -r '.sha' /tmp/blocks-build.json)
+            BUILD_MESSAGE=$(jq -r '.commit.message' /tmp/blocks-build.json)
+            echo "develop-builds: ${BUILD_SHA} (${BUILD_MESSAGE})"
+            if [ "${BUILD_MESSAGE}" = "Build ${SOURCE_SHA}" ]; then
+              echo "BUILD_SHA=${BUILD_SHA}" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Timed out waiting for blocks build from ${SOURCE_SHA}" >&2
+          exit 1
+
+      - name: Restore normal messages and pin fixed blocks
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+
+          const pkgPath = 'package.json';
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+          pkg.dependencies['scratch-blocks'] = `https://github.com/itswiktoragain/scratch-blocks/archive/${process.env.BUILD_SHA}.tar.gz`;
+          fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+
+          const toolboxPath = 'src/lib/make-toolbox-xml.js';
+          let toolbox = fs.readFileSync(toolboxPath, 'utf8');
+          const numericShadow = '<shadow type="math_number"><field name="NUM">1</field></shadow>';
+          const normalShadow = '<shadow type="event_broadcast_menu"></shadow>';
+          const count = toolbox.split(numericShadow).length - 1;
+          if (count !== 2) {
+            throw new Error(`Expected exactly 2 numeric broadcast shadows, found ${count}`);
+          }
+          toolbox = toolbox.split(numericShadow).join(normalShadow);
+          fs.writeFileSync(toolboxPath, toolbox);
+          NODE
+
+      - name: Refresh package lock
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Commit integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json src/lib/make-toolbox-xml.js
+          git commit -m "Use fixed horizontal positioning and normal broadcasts"
+          git push origin HEAD:fix-horizontal-positioning-v3
