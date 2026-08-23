@@ -381,12 +381,12 @@ const events = function (isInitialSetup, isStage, targetId, colors) {
         </block>
         <block type="event_broadcast">
             <value name="BROADCAST_INPUT">
-                <shadow type="event_broadcast_menu"></shadow>
+                <shadow type="math_number"><field name="NUM">1</field></shadow>
             </value>
         </block>
         <block type="event_broadcastandwait">
             <value name="BROADCAST_INPUT">
-              <shadow type="event_broadcast_menu"></shadow>
+              <shadow type="math_number"><field name="NUM">1</field></shadow>
             </value>
         </block>
         ${categorySeparator}
