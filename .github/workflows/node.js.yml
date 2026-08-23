@@ -35,7 +35,10 @@ jobs:
           'sensing_of_object_menu',
           'operator_add',
           'data_variable',
-          'procedures_call'
+          'procedures_call',
+          'event_broadcast_menu',
+          'event_broadcast',
+          'event_whenbroadcastreceived'
         ];
         for (const name of required) {
           if (!catalogue.includes('Blockly.Blocks.' + name)) {
@@ -55,10 +58,13 @@ jobs:
 
         const layout = fs.readFileSync('node_modules/scratch-blocks/shim/dry-eggs-horizontal-layout.js', 'utf8');
         for (const token of [
+          '__dryEggsHorizontalLayoutV3',
           'contentItems',
           'OUTPUT_SHAPE_HEXAGONAL',
           'OUTPUT_SHAPE_ROUND',
-          'targetConnection.tighten_',
+          'connection.setOffsetInBlock(localX, centerY)',
+          'connection.moveToOffset(blockXY)',
+          'if (targetConnection) connection.tighten_();',
           "shapes.push('boolean')",
           "shapes.push('round')"
         ]) {
@@ -66,33 +72,31 @@ jobs:
             throw new Error(`Installed horizontal layout is missing ${token}`);
           }
         }
+        if (layout.includes('if (targetConnection) targetConnection.tighten_();')) {
+          throw new Error('Installed horizontal layout still tightens inputs from the child connection');
+        }
+
+        const horizontalEvents = fs.readFileSync('node_modules/scratch-blocks/blocks_horizontal/event.js', 'utf8');
+        for (const forbidden of [
+          "Blockly.Blocks['event_broadcast']",
+          "Blockly.Blocks['event_broadcastandwait']",
+          "Blockly.Blocks['event_whenbroadcastreceived']"
+        ]) {
+          if (horizontalEvents.includes(forbidden)) {
+            throw new Error(`Installed horizontal events override normal Scratch messaging: ${forbidden}`);
+          }
+        }
 
         const toolbox = fs.readFileSync('src/lib/make-toolbox-xml.js', 'utf8');
-        if (toolbox.includes('<shadow type="event_broadcast_menu"></shadow>')) {
-          throw new Error('Dry Eggs toolbox still uses the normal broadcast dropdown shadow');
+        const normalMessageShadows = (toolbox.match(/<shadow type="event_broadcast_menu"><\/shadow>/g) || []).length;
+        if (normalMessageShadows !== 2) {
+          throw new Error(`Expected 2 normal broadcast dropdown shadows, found ${normalMessageShadows}`);
         }
-        const numericMessageShadows = (toolbox.match(/<shadow type="math_number"><field name="NUM">1<\/field><\/shadow>/g) || []).length;
-        if (numericMessageShadows < 2) {
-          throw new Error('Dry Eggs numeric message shadows are missing from the toolbox');
+        if (toolbox.includes('<shadow type="math_number"><field name="NUM">1</field></shadow>')) {
+          throw new Error('Numeric broadcast shadows are still present in the Dry Eggs toolbox');
         }
 
-        console.log('Complete Dry Eggs horizontal block engine verified.');
-        NODE
-    - name: Verify Dry Eggs numeric message runtime
-      run: |
-        node <<'NODE'
-        const Event = require('./node_modules/scratch-vm/src/blocks/scratch3_event');
-        const Runtime = require('./node_modules/scratch-vm/src/engine/runtime');
-        const runtime = new Runtime();
-        const event = new Event(runtime);
-        const util = {runtime};
-        if (event._getBroadcastName({BROADCAST_INPUT: 4}, util) !== '4') {
-          throw new Error('Numeric message channel 4 did not resolve correctly');
-        }
-        if (event._getBroadcastName({BROADCAST_INPUT: '12.5'}, util) !== '12.5') {
-          throw new Error('String numeric message channel did not resolve correctly');
-        }
-        console.log('Dry Eggs numeric message runtime verified.');
+        console.log('Corrected Dry Eggs horizontal block engine verified.');
         NODE
     - run: npm run build
     - run: npm run test:unit
